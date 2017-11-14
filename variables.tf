@@ -6,7 +6,7 @@ variable "versioning" {
   default = false
 }
 
-//bucket access: list of federated assumed role users (e.g., aws-account-devops/me@turner.com). Roles must exist in the target account.
+//bucket access: list of federated assumed role users (e.g., aws-account-devops/me@turner.com). Roles must exist in the target account and are case sensitive.
 variable "role_users" {
   type = "list"
 }

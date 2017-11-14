@@ -10,7 +10,7 @@ Note that the `role_users` must be valid roles that exist in the same account th
 | Name | Description | Type | Default | Required |
 |------|-------------|:----:|:-----:|:-----:|
 | bucket_name | name of the bucket | string | - | yes |
-| role_users | bucket access: list of federated assumed role users (e.g., aws-account-devops/me@turner.com). Roles must exist in the target account. | list | - | yes |
+| role_users | bucket access: list of federated assumed role users (e.g., aws-account-devops/me@turner.com). Roles must exist in the target account and are case sensitive. | list | - | yes |
 | tag_application | application tag | string | - | yes |
 | tag_contact-email | contact-email tag | string | - | yes |
 | tag_customer | customer tag | string | - | yes |
@@ -33,7 +33,7 @@ provider "aws" {
 }
 
 module "s3_employee" {
-  source      = "github.com/turnerlabs/terraform-s3-employee?ref=v0.1.0"
+  source      = "github.com/turnerlabs/terraform-s3-employee?ref=v0.1.1"
   
   bucket_name = "my-bucket"
 

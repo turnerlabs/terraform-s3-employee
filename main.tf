@@ -46,9 +46,16 @@ data "template_file" "policy" {
   "Version": "2012-10-17",
   "Statement": [    
     {
+      "Sid": "DenyWriteToAllExceptRoleUsers",
       "Effect": "Deny",
       "Principal": "*",
-      "Action": [ "s3:*" ],
+      "Action": [ 
+        "s3:GetObject",
+        "s3:Delete*",
+        "s3:Put*",
+        "s3:Replicate*",
+        "s3:Restore*"
+      ],
       "Resource": [
         "${aws_s3_bucket.bucket.arn}",
         "${aws_s3_bucket.bucket.arn}/*"
@@ -57,14 +64,49 @@ data "template_file" "policy" {
         "StringNotLike": {
           "aws:arn": $${principals}
         }
+      }
+    },
+    {
+      "Sid": "AllowRoleUsersToRead",
+      "Effect": "Allow",
+      "Principal": "*",
+      "Action": [         
+        "s3:Get*",
+        "s3:List*"
+      ],
+      "Resource": [
+        "${aws_s3_bucket.bucket.arn}",
+        "${aws_s3_bucket.bucket.arn}/*"
+      ],
+      "Condition": {
+        "StringLike": {
+          "aws:arn": $${principals}
+        }
       }      
-    }    
+    },    
+    {
+      "Sid": "AllowSamlAccountUsersToReadTagsAndAcl",
+      "Effect": "Allow",
+      "Principal": "*",
+      "Action": [         
+        "s3:GetBucketTagging",
+        "s3:GetBucketAcl"
+      ],
+      "Resource": [
+        "${aws_s3_bucket.bucket.arn}",
+        "${aws_s3_bucket.bucket.arn}/*"
+      ],
+      "Condition": {
+        "StringLike": {
+          "aws:arn": "arn:aws:sts::${data.aws_caller_identity.current.account_id}:*"
+        }
+      }      
+    }
   ]
 }
 EOF
 
   vars {
-    account    = "${data.aws_caller_identity.current.account_id}"
     principals = "${jsonencode(data.template_file.principal.*.rendered)}"
   }
 }

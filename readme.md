@@ -34,7 +34,7 @@ provider "aws" {
 }
 
 module "s3_employee" {
-  source      = "github.com/turnerlabs/terraform-s3-employee?ref=v0.1.1"
+  source      = "github.com/turnerlabs/terraform-s3-employee?ref=v0.1.2"
   
   bucket_name = "my-bucket"
 

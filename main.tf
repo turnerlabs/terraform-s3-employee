@@ -19,6 +19,13 @@ resource "aws_s3_bucket" "bucket" {
     contact-email = "${var.tag_contact-email}"
     customer      = "${var.tag_customer}"
   }
+
+  lifecycle_rule {
+    id                                     = "auto-delete-incomplete-after-x-days"
+    prefix                                 = ""
+    enabled                                = "${var.multipart_delete}" 
+    abort_incomplete_multipart_upload_days = "${var.multipart_days}"
+  }
 }
 
 resource "aws_s3_bucket_policy" "bucket_policy" {

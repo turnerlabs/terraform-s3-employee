@@ -23,7 +23,7 @@ resource "aws_s3_bucket" "bucket" {
   lifecycle_rule {
     id                                     = "auto-delete-incomplete-after-x-days"
     prefix                                 = ""
-    enabled                                = "true"
+    enabled                                = "${var.multipart_delete}" 
     abort_incomplete_multipart_upload_days = "${var.multipart_days}"
   }
 }

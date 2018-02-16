@@ -26,7 +26,11 @@ variable "tag_contact-email" {}
 //customer tag
 variable "tag_customer" {}
 
-//incomplete multipart upload deletion days
+//incomplete multipart upload deletion
+variable "multipart_delete" {
+  default = true
+}
+
 variable "multipart_days" {
-  default = "3"
+  default = 3
 }

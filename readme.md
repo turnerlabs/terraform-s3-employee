@@ -17,7 +17,8 @@ Note that the `role_users` must be valid roles that exist in the same account th
 | tag_environment | environment tag | string | - | yes |
 | tag_team | team tag | string | - | yes |
 | versioning | enable versioning | string | `false` | no |
-| multipart_days | incomplete multipart upload deletion days | string | 3 | yes |
+| multipart_delete | enable incomplete multipart upload deletion | string | `true` | no |
+| multipart_days | incomplete multipart upload deletion days | string | 3 | no |
 
 ## Outputs
 

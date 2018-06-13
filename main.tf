@@ -20,12 +20,36 @@ resource "aws_s3_bucket" "bucket" {
     customer      = "${var.tag_customer}"
   }
 
+  server_side_encryption_configuration {
+    rule {
+      apply_server_side_encryption_by_default {
+        sse_algorithm     = "aws:kms"
+        kms_master_key_id = "${aws_kms_key.bucket_key.arn}"
+      }
+    }
+  }
+
   lifecycle_rule {
     id                                     = "auto-delete-incomplete-after-x-days"
     prefix                                 = ""
-    enabled                                = "${var.multipart_delete}" 
+    enabled                                = "${var.multipart_delete}"
     abort_incomplete_multipart_upload_days = "${var.multipart_days}"
   }
+}
+
+resource "aws_kms_key" "bucket_key" {
+  tags {
+    team          = "${var.tag_team}"
+    application   = "${var.tag_application}"
+    environment   = "${var.tag_environment}"
+    contact-email = "${var.tag_contact-email}"
+    customer      = "${var.tag_customer}"
+  }
+}
+
+resource "aws_kms_alias" "bucket_key_alias" {
+  name          = "alias/${var.bucket_name}-key"
+  target_key_id = "${aws_kms_key.bucket_key.key_id}"
 }
 
 resource "aws_s3_bucket_policy" "bucket_policy" {

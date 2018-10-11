@@ -1,9 +1,9 @@
 terraform-s3-employee
 ======================
 
-A terraform module that creates a tagged S3 bucket with federated assumed role access.
+A terraform module that creates a tagged S3 bucket with federated assumed role access using KMS key encryption by default.
 
-Note that the `role_users` must be valid roles that exist in the same account that the script is run in.
+Note that the `role_users` and `roles` must be valid roles that exist in the same account that the script is run in.
 
 ## Inputs
 
@@ -11,6 +11,7 @@ Note that the `role_users` must be valid roles that exist in the same account th
 |------|-------------|:----:|:-----:|:-----:|
 | bucket_name | name of the bucket | string | - | yes |
 | role_users | bucket access: list of federated assumed role users (e.g., aws-account-devops/me@turner.com). Roles must exist in the target account and are case sensitive. | list | - | yes |
+| roles | bucket and kms key access: list roles that have access to encrypt and decrypt bucket content (e.g., aws-account-devops). Roles must exist in the target account and are case sensitive. | list | - | yes |
 | tag_application | application tag | string | - | yes |
 | tag_contact-email | contact-email tag | string | - | yes |
 | tag_customer | customer tag | string | - | yes |
@@ -42,6 +43,11 @@ module "s3_employee" {
   role_users = [
     "aws-account-devops/me@turner.com",
     "aws-account-devops/you@turner.com",
+  ]
+
+  roles = [
+    "dev-my-task-role",
+    "qa-my-task-role",
   ]
 
   tag_team          = "my-team"

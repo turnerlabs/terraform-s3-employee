@@ -38,6 +38,8 @@ resource "aws_s3_bucket" "bucket" {
 }
 
 resource "aws_kms_key" "bucket_key" {
+  enable_key_rotation = "true"
+
   tags {
     team          = "${var.tag_team}"
     application   = "${var.tag_application}"

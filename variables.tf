@@ -1,5 +1,6 @@
 //name of the bucket
-variable "bucket_name" {}
+variable "bucket_name" {
+}
 
 //enable versioning
 variable "versioning" {
@@ -8,23 +9,28 @@ variable "versioning" {
 
 //bucket access: list of federated assumed role users (e.g., aws-account-devops/me@turner.com). Roles must exist in the target account and are case sensitive.
 variable "role_users" {
-  type = "list"
+  type = list(string)
 }
 
 //environment tag
-variable "tag_environment" {}
+variable "tag_environment" {
+}
 
 //team tag
-variable "tag_team" {}
+variable "tag_team" {
+}
 
 //application tag
-variable "tag_application" {}
+variable "tag_application" {
+}
 
 //contact-email tag
-variable "tag_contact-email" {}
+variable "tag_contact-email" {
+}
 
 //customer tag
-variable "tag_customer" {}
+variable "tag_customer" {
+}
 
 //incomplete multipart upload deletion
 variable "multipart_delete" {
@@ -34,3 +40,4 @@ variable "multipart_delete" {
 variable "multipart_days" {
   default = 3
 }
+

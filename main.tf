@@ -5,26 +5,26 @@
  */
 
 resource "aws_s3_bucket" "bucket" {
-  bucket        = "${var.bucket_name}"
-  force_destroy = "true"
+  bucket        = var.bucket_name
+  force_destroy = true
 
   versioning {
-    enabled = "${var.versioning}"
+    enabled = var.versioning
   }
 
-  tags {
-    team          = "${var.tag_team}"
-    application   = "${var.tag_application}"
-    environment   = "${var.tag_environment}"
-    contact-email = "${var.tag_contact-email}"
-    customer      = "${var.tag_customer}"
+  tags = {
+    team          = var.tag_team
+    application   = var.tag_application
+    environment   = var.tag_environment
+    contact-email = var.tag_contact-email
+    customer      = var.tag_customer
   }
 
   server_side_encryption_configuration {
     rule {
       apply_server_side_encryption_by_default {
         sse_algorithm     = "aws:kms"
-        kms_master_key_id = "${aws_kms_key.bucket_key.arn}"
+        kms_master_key_id = aws_kms_key.bucket_key.arn
       }
     }
   }
@@ -32,43 +32,44 @@ resource "aws_s3_bucket" "bucket" {
   lifecycle_rule {
     id                                     = "auto-delete-incomplete-after-x-days"
     prefix                                 = ""
-    enabled                                = "${var.multipart_delete}"
-    abort_incomplete_multipart_upload_days = "${var.multipart_days}"
+    enabled                                = var.multipart_delete
+    abort_incomplete_multipart_upload_days = var.multipart_days
   }
 }
 
 resource "aws_kms_key" "bucket_key" {
-  enable_key_rotation = "true"
+  enable_key_rotation = true
 
-  tags {
-    team          = "${var.tag_team}"
-    application   = "${var.tag_application}"
-    environment   = "${var.tag_environment}"
-    contact-email = "${var.tag_contact-email}"
-    customer      = "${var.tag_customer}"
+  tags = {
+    team          = var.tag_team
+    application   = var.tag_application
+    environment   = var.tag_environment
+    contact-email = var.tag_contact-email
+    customer      = var.tag_customer
   }
 }
 
 resource "aws_kms_alias" "bucket_key_alias" {
   name          = "alias/${var.bucket_name}-key"
-  target_key_id = "${aws_kms_key.bucket_key.key_id}"
+  target_key_id = aws_kms_key.bucket_key.key_id
 }
 
 resource "aws_s3_bucket_policy" "bucket_policy" {
-  bucket = "${aws_s3_bucket.bucket.id}"
-  policy = "${data.template_file.policy.rendered}"
+  bucket = aws_s3_bucket.bucket.id
+  policy = data.template_file.policy.rendered
 }
 
-data "aws_caller_identity" "current" {}
+data "aws_caller_identity" "current" {
+}
 
 //render dynamic list of users
 data "template_file" "principal" {
-  count    = "${length(var.role_users)}"
+  count    = length(var.role_users)
   template = "arn:aws:sts::$${account}:assumed-role/$${user}"
 
-  vars {
-    account = "${data.aws_caller_identity.current.account_id}"
-    user    = "${var.role_users[count.index]}"
+  vars = {
+    account = data.aws_caller_identity.current.account_id
+    user    = var.role_users[count.index]
   }
 }
 
@@ -139,7 +140,9 @@ data "template_file" "policy" {
 }
 EOF
 
-  vars {
-    principals = "${jsonencode(data.template_file.principal.*.rendered)}"
+
+  vars = {
+    principals = jsonencode(data.template_file.principal.*.rendered)
   }
 }
+

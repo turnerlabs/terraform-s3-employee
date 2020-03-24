@@ -29,13 +29,15 @@ Note that the `role_users` must be valid roles that exist in the same account th
 
 ### usage example
 
+requires terraform >= 0.12
+
 ```hcl
 provider "aws" {
   profile = "aws-account:aws-account-devops"
 }
 
 module "s3_employee" {
-  source      = "github.com/turnerlabs/terraform-s3-employee?ref=v0.2.0"
+  source      = "github.com/turnerlabs/terraform-s3-employee?ref=v1.0.0"
   
   bucket_name = "my-bucket"
 
